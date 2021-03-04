@@ -1,0 +1,3 @@
+Es wird ein Schachspiel im MVC-Muster erstellt. 
+Es wird ein sehr leichter Computergegner implementiert, der seine Züge nur zufällig setzt.
+Falls noch Zeit sein sollte, wird ein etwas schwierigerer Computergegner mithilfe des Minimax-Algorithmus implementiert.
