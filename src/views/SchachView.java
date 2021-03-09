@@ -548,6 +548,7 @@ public class SchachView extends JFrame
 
 	private void styleComponents()
 	{
+		this.pnlBoard.setBackground(Color.black);
 		for (JButton jButton : this.fields)
 		{
 			jButton.setPreferredSize(new Dimension(80, 80));

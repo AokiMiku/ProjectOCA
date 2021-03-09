@@ -74,7 +74,7 @@ public class SchachController implements ActionListener
 		this.view.getFieldH5().setFigurAufFeld(sf[0]);
 		
 		sf = this.model.getSpielerWeiss().getFiguren(FigurArt.KOENIG);
-		this.view.getFieldH5().setFigurAufFeld(sf[0]);
+		this.view.getFieldH4().setFigurAufFeld(sf[0]);
 		
 		sf = this.model.getSpielerWeiss().getFiguren(FigurArt.BAUER);
 		this.view.getFieldG1().setFigurAufFeld(sf[0]);
