@@ -25,6 +25,12 @@ public class SchachModel implements ISchachModel
 
 	public SchachModel()
 	{
+		this.newGame();
+	}
+
+	@Override
+	public void newGame()
+	{
 		this.spielerWeiss = new SchachSpieler(SchachTeam.WEISS);
 		this.spielerSchwarz = new SchachSpieler(SchachTeam.SCHWARZ);
 	}

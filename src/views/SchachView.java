@@ -2,12 +2,14 @@ package views;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import controller.SchachController;
@@ -19,6 +21,7 @@ public class SchachView extends JFrame
 	 * 
 	 */
 	private static final long serialVersionUID = -5334413959560661613L;
+	private static final int fontSize= 48;
 
 	private SchachButton fieldA1;
 	private SchachButton fieldA2;
@@ -346,10 +349,22 @@ public class SchachView extends JFrame
 	{
 		return this.fields;
 	}
+	
+	public SchachButton[][] getSpielBrett()
+	{
+		return this.spielBrett;
+	}
+	
+	private JLabel lblGameText;
+	
+	public JLabel getLblGameText()
+	{
+		return this.lblGameText;
+	}
 
 	private SchachController controller;
 	private ArrayList<SchachButton> fields;
-	private JButton[][] spielBrett;
+	private SchachButton[][] spielBrett;
 	private JPanel pnlBoard;
 	private JPanel pnlGame;
 
@@ -359,9 +374,10 @@ public class SchachView extends JFrame
 
 	public SchachView()
 	{
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		this.setSize(800, 800);
 		this.setLocationRelativeTo(null);
+		this.setTitle("ApS Games - Chess");
 		this.initComponents();
 		this.addComponents();
 		this.styleComponents();
@@ -370,10 +386,12 @@ public class SchachView extends JFrame
 
 	private void initComponents()
 	{
+		this.controller = new SchachController(this);
+		this.addWindowListener(this.controller);
 		this.pnlBoard = new JPanel(new GridLayout(8, 8, 2, 2));
-		this.pnlGame = new JPanel();
+		this.pnlGame = new JPanel(new FlowLayout(FlowLayout.CENTER, 10000, 10));
 		
-		this.fontForButtons = new Font("DejaVu Sans", Font.BOLD, 48);
+		this.fontForButtons = new Font("DejaVu Sans", Font.BOLD, fontSize);
 
 		this.fieldA1 = new SchachButton('a', 1);
 		this.fieldA2 = new SchachButton('a', 2);
@@ -441,7 +459,7 @@ public class SchachView extends JFrame
 		this.fieldH8 = new SchachButton('h', 8);
 
 		this.fields = new ArrayList<SchachButton>();
-		this.controller = new SchachController(this);
+		this.lblGameText = new JLabel("Game init.");
 		
 		this.fields.add(fieldA1);
 		this.fields.add(fieldA2);
@@ -521,7 +539,7 @@ public class SchachView extends JFrame
 			this.fields.get(i).setFont(this.fontForButtons);
 		}
 
-		this.spielBrett = new JButton[8][8];
+		this.spielBrett = new SchachButton[8][8];
 		int idx = 0;
 		for (int i = 0; i < this.spielBrett.length; i++)
 		{
@@ -542,6 +560,7 @@ public class SchachView extends JFrame
 			this.pnlBoard.add(jButton);
 		}
 		this.pnlGame.add(this.pnlBoard);
+		this.pnlGame.add(this.lblGameText);
 
 		this.setContentPane(this.pnlGame);
 	}
@@ -555,7 +574,11 @@ public class SchachView extends JFrame
 			jButton.setBorder(null);
 			jButton.setFocusable(false);
 		}
-
+		this.buildChessBoard();
+	}
+	
+	public void buildChessBoard()
+	{
 		for (int i = 0; i < this.spielBrett.length; i++) // rows
 		{
 			for (int j = 0; j < this.spielBrett[i].length; j++) // columns
@@ -584,5 +607,6 @@ public class SchachView extends JFrame
 				}
 			}
 		}
+		
 	}
 }

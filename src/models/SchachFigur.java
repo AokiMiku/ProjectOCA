@@ -152,7 +152,7 @@ public class SchachFigur
 				break;
 		}
 		
-		System.out.println(this.bezeichnung + " erstellt.");
+//		System.out.println(this.bezeichnung + " erstellt.");
 	}
 
 	public SchachFigur(SchachFigur copyOf)

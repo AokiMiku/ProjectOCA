@@ -45,6 +45,10 @@ public class SchachButton extends JButton
 		{
 			this.setText(figurAufFeld.toString());
 		}
+		else
+		{
+			this.setText("");
+		}
 	}
 	
 	public String getPosition()
@@ -61,6 +65,13 @@ public class SchachButton extends JButton
 	@Override
 	public String toString() 
 	{
-		return this.getPosition();
+		if (this.figurAufFeld != null)
+		{
+			return this.getPosition() + " " + this.figurAufFeld.toString();
+		}
+		else
+		{
+			return this.getPosition();
+		}
 	}
 }
