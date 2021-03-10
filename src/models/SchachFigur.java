@@ -85,27 +85,27 @@ public class SchachFigur
 				switch (art)
 				{
 					case BAUER:
-						this.unicodeChar = "\u265F";
+						this.unicodeChar = "♟";
 						this.bezeichnung += "r Bauer";
 						break;
 					case TURM:
-						this.unicodeChar = "\u265C";
+						this.unicodeChar = "♜";
 						this.bezeichnung += "r Turm";
 						break;
 					case SPRINGER:
-						this.unicodeChar = "\u265E";
+						this.unicodeChar = "♞";
 						this.bezeichnung += "r Springer";
 						break;
 					case LAEUFER:
-						this.unicodeChar = "\u265D";
+						this.unicodeChar = "♝";
 						this.bezeichnung += "r Läufer";
 						break;
 					case DAME:
-						this.unicodeChar = "\u265B";
+						this.unicodeChar = "♛";
 						this.bezeichnung += " Dame";
 						break;
 					case KOENIG:
-						this.unicodeChar = "\u265A";
+						this.unicodeChar = "♚";
 						this.bezeichnung += "r König";
 						break;
 					
@@ -119,27 +119,27 @@ public class SchachFigur
 				switch (art)
 				{
 				case BAUER:
-					this.unicodeChar = "\u2659";
+					this.unicodeChar = "♙";
 					this.bezeichnung += "r Bauer";
 					break;
 				case TURM:
-					this.unicodeChar = "\u2656";
+					this.unicodeChar = "♖";
 					this.bezeichnung += "r Turm";
 					break;
 				case SPRINGER:
-					this.unicodeChar = "\u2658";
+					this.unicodeChar = "♘";
 					this.bezeichnung += "r Springer";
 					break;
 				case LAEUFER:
-					this.unicodeChar = "\u2657";
+					this.unicodeChar = "♗";
 					this.bezeichnung += "r Läufer";
 					break;
 				case DAME:
-					this.unicodeChar = "\u2655";
+					this.unicodeChar = "♕";
 					this.bezeichnung += " Dame";
 					break;
 				case KOENIG:
-					this.unicodeChar = "\u2654";
+					this.unicodeChar = "♔";
 					this.bezeichnung += "r König";
 					break;
 					
