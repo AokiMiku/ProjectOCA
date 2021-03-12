@@ -7,6 +7,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
+import enemies.IEnemy;
+import enemies.RandomEnemy;
 import exceptions.IllegalFigureStateException;
 import models.*;
 import views.*;
@@ -15,6 +17,7 @@ public class SchachController extends WindowAdapter implements ActionListener
 {
 	private SchachView view;
 	private ISchachModel model;
+	private IEnemy enemy;
 
 	private SchachTeam spielerAmZug;
 	private SchachFigur[][] figurenAufSpielbrett;
@@ -26,19 +29,22 @@ public class SchachController extends WindowAdapter implements ActionListener
 	private boolean isGameOver = false;
 	private boolean isSchach = false;
 	private ArrayList<SchachFigur> mussFigurBewegen = new ArrayList<SchachFigur>();
+	private boolean isKIZug;
 
 	public SchachController(SchachView view)
 	{
 		this.view = view;
 		this.model = new SchachModel();
 		this.spielerAmZug = SchachTeam.WEISS;
+		this.enemy = new RandomEnemy(SchachTeam.SCHWARZ);
+		this.isKIZug = this.enemy.getTeam() == this.spielerAmZug;
 	}
 
 	@Override
 	public void windowOpened(WindowEvent e)
 	{
 		super.windowOpened(e);
-		this.newGame();
+		this.neuesSpiel();
 	}
 
 	@Override
@@ -50,9 +56,9 @@ public class SchachController extends WindowAdapter implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		System.out.println(e.getSource());
 		if (this.view.getFields().contains(e.getSource()))
 		{
+			System.out.println(e.getSource());
 			if (this.isGameOver)
 			{
 				return;
@@ -85,9 +91,9 @@ public class SchachController extends WindowAdapter implements ActionListener
 				this.getFigurenAufSpielbrett();
 				boolean[][] spielzuege = this.getGueltigeSpielzuege(figur);
 
-				if (this.anzahlGueltigeSpielzuege > 1)
+				if (this.anzahlGueltigeSpielzuege > 0)
 				{
-					System.out.println((this.anzahlGueltigeSpielzuege - 1) + " gueltige Zuege.");
+					System.out.println((this.anzahlGueltigeSpielzuege) + " gueltige Zuege.");
 					for (int i = 0; i < spielzuege.length; i++)
 					{
 						for (int j = 0; j < spielzuege[i].length; j++)
@@ -114,9 +120,33 @@ public class SchachController extends WindowAdapter implements ActionListener
 				{
 					macheZug(this.feldMitFigur, this.feldFigurGesetztAuf);
 					this.beendeZug();
+					if (this.enemy != null && !this.isKIZug)
+					{
+						this.fuehreKIZugAus();
+					}
 				}
 			}
 		}
+		else if (e.getSource() == this.view.getMniNeuesSpiel())
+		{
+			this.neuesSpiel();
+		}
+	}
+	
+	private void fuehreKIZugAus()
+	{
+		this.isKIZug = true;
+		SchachButton sbStart;
+		boolean[][] spielzuege;
+		do
+		{
+			sbStart = this.enemy.waehleStartFeld(this.view.getSpielBrett());
+			spielzuege = this.getGueltigeSpielzuege((SchachFigur) sbStart.getFigurAufFeld());
+		} while (this.anzahlGueltigeSpielzuege <= 1);
+		
+		sbStart.doClick();
+		this.enemy.waehleZielFeld(this.view.getSpielBrett(), spielzuege).doClick();
+		this.isKIZug = false;
 	}
 
 	private void macheZug(SchachButton vonFeld, SchachButton aufFeld)
@@ -126,9 +156,10 @@ public class SchachController extends WindowAdapter implements ActionListener
 		
 		if (this.feldFigurGesetztAuf.getFigurAufFeld() != null)
 		{
-			if (((SchachFigur) this.feldFigurGesetztAuf.getFigurAufFeld()).getTeam() != this.spielerAmZug)
+			SchachFigur sf = (SchachFigur) this.feldFigurGesetztAuf.getFigurAufFeld();
+			if (sf.getTeam() != this.spielerAmZug)
 			{
-				((SchachFigur) this.feldFigurGesetztAuf.getFigurAufFeld()).schlageFigur();
+				sf.schlageFigur();
 			}
 		}
 
@@ -195,6 +226,7 @@ public class SchachController extends WindowAdapter implements ActionListener
 	private void getFigurenForCheck()
 	{
 		System.out.println("Start: getFigurenForCheck");
+		this.mussFigurBewegen.clear();
 		this.getFigurenAufSpielbrett();
 		
 		for (int i = 0; i < figurenAufSpielbrett.length; i++)
@@ -317,13 +349,15 @@ public class SchachController extends WindowAdapter implements ActionListener
 		return isSchachmatt;
 	}
 
-	private void newGame()
+	private void neuesSpiel()
 	{
 		for (SchachButton feld : this.view.getFields())
 		{
 			feld.setText("");
 		}
-		this.model.newGame();
+		this.model.neuesSpiel();
+		this.view.neuesSpiel();
+		this.spielerAmZug = SchachTeam.WEISS;
 
 		SchachFigur[] sf = this.model.getSpielerSchwarz().getFiguren(FigurArt.TURM);
 		this.view.getFieldA1().setFigurAufFeld(sf[0]);
@@ -382,6 +416,7 @@ public class SchachController extends WindowAdapter implements ActionListener
 		this.view.getFieldG8().setFigurAufFeld(sf[7]);
 
 		this.view.getLblGameText().setText("Weiss beginnt.");
+		this.getFigurenAufSpielbrett();
 		this.isGameOver = false;
 	}
 
@@ -406,7 +441,9 @@ public class SchachController extends WindowAdapter implements ActionListener
 	{
 		int posFigurRow = -1;
 		int posFigurCol = -1;
-
+		this.getFigurenAufSpielbrett();
+		
+		outer:
 		for (int row = 0; row < this.figurenAufSpielbrett.length; row++)
 		{
 			for (int col = 0; col < this.figurenAufSpielbrett[row].length; col++)
@@ -415,6 +452,7 @@ public class SchachController extends WindowAdapter implements ActionListener
 				{
 					posFigurRow = row;
 					posFigurCol = col;
+					break outer;
 				}
 			}
 		}
@@ -426,9 +464,9 @@ public class SchachController extends WindowAdapter implements ActionListener
 		}
 
 		ArrayList<Integer> idxRowsGueltig = new ArrayList<>();
-		idxRowsGueltig.add(posFigurRow);
+//		idxRowsGueltig.add(posFigurRow);
 		ArrayList<Integer> idxColsGueltig = new ArrayList<>();
-		idxColsGueltig.add(posFigurCol);
+//		idxColsGueltig.add(posFigurCol);
 
 		switch (figurAmZug.getArt())
 		{

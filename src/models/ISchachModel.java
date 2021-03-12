@@ -6,5 +6,5 @@ public interface ISchachModel
 	SchachSpieler getSpielerSchwarz();
 	
 	void schlageFigur(SchachFigur meine, SchachFigur gegner);
-	void newGame();
+	void neuesSpiel();
 }

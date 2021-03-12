@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import controller.SchachController;
@@ -361,6 +364,15 @@ public class SchachView extends JFrame
 	{
 		return this.lblGameText;
 	}
+	
+	private JMenuBar mnbMain;
+	private JMenu mnuSpiel;
+	private JMenuItem mniNeuesSpiel;
+	
+	public JMenuItem getMniNeuesSpiel()
+	{
+		return this.mniNeuesSpiel;
+	}
 
 	private SchachController controller;
 	private ArrayList<SchachButton> fields;
@@ -390,6 +402,11 @@ public class SchachView extends JFrame
 		this.addWindowListener(this.controller);
 		this.pnlBoard = new JPanel(new GridLayout(8, 8, 2, 2));
 		this.pnlGame = new JPanel(new FlowLayout(FlowLayout.CENTER, 10000, 10));
+		
+		this.mnbMain = new JMenuBar();
+		this.mnuSpiel = new JMenu("Spiel");
+		this.mniNeuesSpiel = new JMenuItem("Neues Spiel");
+		this.mniNeuesSpiel.addActionListener(this.controller);
 		
 		this.fontForButtons = new Font("DejaVu Sans", Font.BOLD, fontSize);
 
@@ -555,6 +572,10 @@ public class SchachView extends JFrame
 
 	private void addComponents()
 	{
+		this.setJMenuBar(this.mnbMain);
+		this.mnbMain.add(this.mnuSpiel);
+		this.mnuSpiel.add(this.mniNeuesSpiel);
+		
 		for (JButton jButton : this.fields)
 		{
 			this.pnlBoard.add(jButton);
@@ -607,6 +628,13 @@ public class SchachView extends JFrame
 				}
 			}
 		}
-		
+	}
+	
+	public void neuesSpiel()
+	{
+		for (SchachButton schachButton : fields)
+		{
+			schachButton.setFigurAufFeld(null);
+		}
 	}
 }
