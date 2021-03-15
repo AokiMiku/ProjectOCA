@@ -137,15 +137,20 @@ public class SchachController extends WindowAdapter implements ActionListener
 	{
 		this.isKIZug = true;
 		SchachButton sbStart;
-		boolean[][] spielzuege;
+		boolean[][] spielzuege = null;
 		do
 		{
-			sbStart = this.enemy.waehleStartFeld(this.view.getSpielBrett());
-			spielzuege = this.getGueltigeSpielzuege((SchachFigur) sbStart.getFigurAufFeld());
+			sbStart = this.enemy.waehleStartFeld(this.view.getSpielBrett(), this.mussFigurBewegen);
+			if (sbStart != null)
+			{
+				spielzuege = this.getGueltigeSpielzuege((SchachFigur) sbStart.getFigurAufFeld());
+			}
 		} while (this.anzahlGueltigeSpielzuege <= 1);
 		
-		sbStart.doClick();
-		this.enemy.waehleZielFeld(this.view.getSpielBrett(), spielzuege).doClick();
+		this.actionPerformed(new ActionEvent(sbStart, 0, null));
+//		sbStart.doClick();
+		this.actionPerformed(new ActionEvent(this.enemy.waehleZielFeld(this.view.getSpielBrett(), spielzuege), 0, null));
+//		this.enemy.waehleZielFeld(this.view.getSpielBrett(), spielzuege).doClick();
 		this.isKIZug = false;
 	}
 
@@ -170,6 +175,7 @@ public class SchachController extends WindowAdapter implements ActionListener
 		else
 		{
 			System.out.println("macheZug::this.feldMitFigur.getFigurAufFeld() is null");
+			return;
 		}
 		
 		this.feldFigurGesetztAuf.setFigurAufFeld(this.feldMitFigur.getFigurAufFeld());
@@ -188,7 +194,8 @@ public class SchachController extends WindowAdapter implements ActionListener
 		}
 		else
 		{
-			System.out.println("macheLetztenZugRueckgaengig::his.feldMitFigur.getFigurAufFeld() is null");
+			System.out.println("macheLetztenZugRueckgaengig::this.feldMitFigur.getFigurAufFeld() is null");
+			return;
 		}
 		
 		this.feldMitFigur.setFigurAufFeld(this.feldFigurGesetztAuf.getFigurAufFeld());
@@ -251,17 +258,23 @@ public class SchachController extends WindowAdapter implements ActionListener
 							continue;
 						}
 						
-						this.macheZug(this.view.getSpielBrett()[i][j], this.view.getSpielBrett()[k][l]);
-						this.checkGameOver();
-						if (!this.isSchach)
+						if (!this.checkForCheckBreak(this.view.getSpielBrett()[i][j], this.view.getSpielBrett()[k][l]))
 						{
 							this.mussFigurBewegen.add(pruefe);
 						}
-						this.macheLetztenZugRueckgaengig();
 					}
 				}
 			}
 		}
+	}
+
+	private boolean checkForCheckBreak(SchachButton vonFeld, SchachButton aufFeld)
+	{
+		this.macheZug(vonFeld, aufFeld);
+		this.checkGameOver();
+		this.macheZug(aufFeld, vonFeld);
+//		this.macheLetztenZugRueckgaengig();
+		return this.isSchach;
 	}
 
 	private boolean checkGameOver()
@@ -358,6 +371,10 @@ public class SchachController extends WindowAdapter implements ActionListener
 		this.model.neuesSpiel();
 		this.view.neuesSpiel();
 		this.spielerAmZug = SchachTeam.WEISS;
+		this.mussFigurBewegen.clear();
+		this.isGameOver = false;
+		this.isSchach = false;
+		this.isKIZug = false;
 
 		SchachFigur[] sf = this.model.getSpielerSchwarz().getFiguren(FigurArt.TURM);
 		this.view.getFieldA1().setFigurAufFeld(sf[0]);
@@ -417,7 +434,6 @@ public class SchachController extends WindowAdapter implements ActionListener
 
 		this.view.getLblGameText().setText("Weiss beginnt.");
 		this.getFigurenAufSpielbrett();
-		this.isGameOver = false;
 	}
 
 	private void getFigurenAufSpielbrett()
@@ -627,6 +643,26 @@ public class SchachController extends WindowAdapter implements ActionListener
 				gueltigeSpielzuege[idxRowsGueltig.get(i)][idxColsGueltig.get(i)] = true;
 			}
 		}
+		
+//		if (this.isSchach)
+//		{
+//			for (int i = 0; i < gueltigeSpielzuege.length; i++)
+//			{
+//				for (int j = 0; j < gueltigeSpielzuege[i].length; j++)
+//				{
+//					if (!gueltigeSpielzuege[i][j])
+//					{
+//						continue;
+//					}
+//					
+//					if (this.checkForCheckBreak(this.view.getSpielBrett()[posFigurRow][posFigurCol], this.view.getSpielBrett()[i][j]))
+//					{
+//						this.anzahlGueltigeSpielzuege--;
+//						gueltigeSpielzuege[i][j] = false;
+//					}
+//				}
+//			}
+//		}
 		
 //		if (figurAmZug.getArt() == FigurArt.LAEUFER)
 //		{

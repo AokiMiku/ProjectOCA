@@ -18,20 +18,26 @@ public class RandomEnemy implements IEnemy
 	}
 
 	@Override
-	public SchachButton waehleStartFeld(SchachButton[][] spielfeld)
+	public SchachButton waehleStartFeld(SchachButton[][] spielfeld, ArrayList<SchachFigur> mussBewegen)
 	{
 		ArrayList<SchachButton> gueltigeFelder = new ArrayList<>();
 		for (int i = 0; i < spielfeld.length; i++)
 		{
 			for (int j = 0; j < spielfeld[i].length; j++)
 			{
-				if (spielfeld[i][j].getFigurAufFeld() == null || ((SchachFigur) spielfeld[i][j].getFigurAufFeld()).getTeam() != this.team)
+				SchachFigur sf = ((SchachFigur) spielfeld[i][j].getFigurAufFeld());
+				if (sf == null || sf.getTeam() != this.team || (mussBewegen != null && mussBewegen.size() > 0 && !mussBewegen.contains(sf)))
 				{
 					continue;
 				}
 				
 				gueltigeFelder.add(spielfeld[i][j]);
 			}
+		}
+		
+		if (gueltigeFelder.size() == 0)
+		{
+			return null;
 		}
 		
 		return gueltigeFelder.get(RandomGenerator.getRandomNumber(0, gueltigeFelder.size() - 1));
@@ -54,7 +60,7 @@ public class RandomEnemy implements IEnemy
 			}
 		}
 		
-		return gueltigeFelder.get(RandomGenerator.getRandomNumber(1, gueltigeFelder.size() - 1));
+		return gueltigeFelder.get(RandomGenerator.getRandomNumber(0, gueltigeFelder.size() - 1));
 	}
 
 	public RandomEnemy(SchachTeam team)
